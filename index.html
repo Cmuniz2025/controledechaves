@@ -66,7 +66,7 @@
                     </div>
                 </div>
                  <div class="mt-6 text-center text-xs text-gray-400">
-                    <p>Modo: <span class="font-mono">Local</span></p>
+                    <p>ID da Sessão: <span id="userId" class="font-mono">Aguardando...</span></p>
                 </div>
             </div>
 
@@ -100,6 +100,11 @@
                             <tbody id="historyTableBody"></tbody>
                         </table>
                     </div>
+                    <div class="mt-6 text-center">
+                        <button id="btnGerarRelatorio" class="bg-teal-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-teal-600 transition-colors flex items-center justify-center gap-2 mx-auto">
+                            <i class="fa-solid fa-file-pdf"></i> Gerar Relatório em PDF
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -118,7 +123,7 @@
         <p class="text-sm text-gray-500">Site criado por Claudio Muniz®</p>
     </footer>
 
-    <!-- O nosso script -->
-    <script src="script.js"></script>
+    <!-- Firebase SDKs -->
+    <script type="module" src="script.js"></script>
 </body>
 </html>
