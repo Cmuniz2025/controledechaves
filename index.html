@@ -12,9 +12,9 @@
     <!-- O nosso estilo personalizado -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen">
 
-    <div id="app-container" class="container mx-auto p-4 md:p-8 max-w-7xl">
+    <main id="app-container" class="container mx-auto p-4 md:p-8 max-w-7xl flex-grow">
 
         <header class="text-center mb-8">
             <h1 class="text-3xl md:text-4xl font-bold text-gray-800">🔑 Controle de Chaves</h1>
@@ -22,7 +22,8 @@
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-1 bg-white p-6 rounded-2xl shadow-lg">
+            <!-- Coluna de Ações -->
+            <div class="bg-white p-6 rounded-2xl shadow-lg">
                 <h2 class="text-xl font-bold mb-4 border-b pb-2">Registrar Movimentação</h2>
                 <div class="space-y-4">
                     <div>
@@ -45,12 +46,9 @@
                         <label for="personName" class="block text-sm font-medium text-gray-600">Nome do Retirante</label>
                         <input type="text" id="personName" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500" placeholder="Ex: João da Silva">
                     </div>
-                    <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <div class="pt-2">
                         <button id="btnSaida" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i> Registrar Saída
-                        </button>
-                        <button id="btnEntrada" class="w-full bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-arrow-right-to-bracket"></i> Registrar Entrada
                         </button>
                     </div>
                 </div>
@@ -59,6 +57,7 @@
                 </div>
             </div>
 
+            <!-- Coluna de Listas -->
             <div class="lg:col-span-2 space-y-8">
                 <div class="bg-white p-6 rounded-2xl shadow-lg">
                     <h2 class="text-xl font-bold mb-4 border-b pb-2 flex items-center gap-2"><i class="fa-solid fa-key text-yellow-500"></i> Chaves em Uso (<span id="inUseCount">0</span>)</h2>
@@ -99,7 +98,11 @@
                 <button id="closeModalButton" class="mt-6 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">Fechar</button>
             </div>
         </div>
-    </div>
+    </main>
+
+    <footer class="text-center py-4 mt-8">
+        <p class="text-sm text-gray-500">Site criado por Claudio Muniz®</p>
+    </footer>
 
     <!-- O nosso script -->
     <script src="script.js"></script>
