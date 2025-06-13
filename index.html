@@ -46,6 +46,19 @@
                         <label for="personName" class="block text-sm font-medium text-gray-600">Nome do Retirante</label>
                         <input type="text" id="personName" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500" placeholder="Ex: João da Silva">
                     </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">Quadro de Chaves</label>
+                        <div class="mt-2 flex items-center space-x-6">
+                            <label for="quadro1" class="flex items-center cursor-pointer">
+                                <input type="radio" id="quadro1" name="quadro" value="Quadro 01" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" checked>
+                                <span class="ml-2 text-sm text-gray-700">Quadro 01</span>
+                            </label>
+                            <label for="quadro2" class="flex items-center cursor-pointer">
+                                <input type="radio" id="quadro2" name="quadro" value="Quadro 02" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                <span class="ml-2 text-sm text-gray-700">Quadro 02</span>
+                            </label>
+                        </div>
+                    </div>
                     <div class="pt-2">
                         <button id="btnSaida" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i> Registrar Saída
@@ -78,6 +91,7 @@
                                 <tr>
                                     <th scope="col" class="px-4 py-3">Chave</th>
                                     <th scope="col" class="px-4 py-3">Pessoa</th>
+                                    <th scope="col" class="px-4 py-3">Quadro</th>
                                     <th scope="col" class="px-4 py-3">Setor</th>
                                     <th scope="col" class="px-4 py-3">Status</th>
                                     <th scope="col" class="px-4 py-3">Data e Hora</th>
