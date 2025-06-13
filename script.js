@@ -16,8 +16,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalIcon = document.getElementById('notificationIcon');
     const closeModalButton = document.getElementById('closeModalButton');
 
+    // --- DADOS DE EXEMPLO PARA DEMONSTRAÇÃO ---
+    const createDemoKeys = () => {
+        const now = new Date();
+        const twentyFiveHoursAgo = new Date(now.getTime() - (25 * 60 * 60 * 1000));
+
+        return [
+            // Apenas a chave atrasada para a demonstração
+            { keyNumber: 'SEG-01', sector: 'Segurança', personName: 'Carlos Pereira', quadro: 'Quadro 01', timestamp: twentyFiveHoursAgo } 
+        ];
+    };
+    
     // Armazenamento de dados local
-    let keysInUse = JSON.parse(localStorage.getItem('keysInUse')) || [];
+    let keysInUse = JSON.parse(localStorage.getItem('keysInUse')) || createDemoKeys();
     let fullHistory = JSON.parse(localStorage.getItem('fullHistory')) || [];
 
     // Converte timestamps de string para Date ao carregar
@@ -46,22 +57,24 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const sortedKeys = [...keysInUse].sort((a,b) => b.timestamp - a.timestamp);
+        const sortedKeys = [...keysInUse].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
         const now = Date.now();
         const twentyFourHoursInMs = 24 * 60 * 60 * 1000;
 
         sortedKeys.forEach(key => {
-            const isOverdue = (now - key.timestamp.getTime()) > twentyFourHoursInMs;
+            const isOverdue = (now - new Date(key.timestamp).getTime()) > twentyFourHoursInMs;
             const cardClasses = isOverdue
               ? 'bg-red-200 border-red-600 overdue-key'
               : 'bg-blue-50 border-blue-200';
             
-            const date = key.timestamp.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+            const date = new Date(key.timestamp).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
             const card = `
                 <div class="border rounded-lg p-3 flex flex-col sm:flex-row justify-between items-center gap-3 transition-colors duration-500 ${cardClasses}">
                     <div class="flex-grow">
                         <p class="font-bold text-gray-800">${key.keyNumber}</p>
-                        <p class="text-sm text-gray-600">Por: <span class="font-semibold">${key.personName}</span> (${key.sector || 'N/A'})</p>
+                        <p class="text-sm text-gray-600">
+                            Por: <span class="font-semibold">${key.personName}</span> (${key.sector || 'N/A'}) - <span class="font-medium">${key.quadro || ''}</span>
+                        </p>
                         <p class="text-xs text-gray-500 mt-1">Em: ${date}</p>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-2 flex-shrink-0 w-full sm:w-auto">
@@ -82,14 +95,14 @@ document.addEventListener('DOMContentLoaded', () => {
         historyTableBody.innerHTML = '';
         if (history.length === 0) {
             const message = searchInput.value ? `Nenhum resultado para "${searchInput.value}".` : "Nenhum histórico encontrado.";
-            historyTableBody.innerHTML = `<tr><td colspan="5" class="text-center p-4">${message}</td></tr>`;
+            historyTableBody.innerHTML = `<tr><td colspan="6" class="text-center p-4">${message}</td></tr>`;
             return;
         }
         
-        const sortedHistory = [...history].sort((a, b) => b.timestamp - a.timestamp);
+        const sortedHistory = [...history].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
         sortedHistory.forEach(item => {
-            const date = item.timestamp.toLocaleString('pt-BR');
+            const date = new Date(item.timestamp).toLocaleString('pt-BR');
             let statusClass, statusText;
             switch (item.status) {
                 case 'saida': statusClass = 'bg-red-100 text-red-800'; statusText = 'Saída'; break;
@@ -101,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <tr class="border-b hover:bg-gray-50">
                     <td class="px-4 py-3 font-medium">${item.keyNumber}</td>
                     <td class="px-4 py-3">${item.personName}</td>
+                    <td class="px-4 py-3">${item.quadro || 'N/A'}</td>
                     <td class="px-4 py-3">${item.sector || 'N/A'}</td>
                     <td class="px-4 py-3"><span class="px-2 py-1 font-semibold leading-tight text-xs rounded-full ${statusClass}">${statusText}</span></td>
                     <td class="px-4 py-3">${date}</td>
@@ -133,9 +147,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const keyNumber = keyNumberEl.value.trim();
         const sector = sectorEl.value;
         const personName = personNameEl.value.trim();
+        const quadro = document.querySelector('input[name="quadro"]:checked').value;
 
-        if (!keyNumber || !personName || !sector) {
-            showNotification('Campos Obrigatórios', 'Por favor, preencha todos os campos: Chave, Setor e Nome.', 'error');
+        if (!keyNumber || !personName || !sector || !quadro) {
+            showNotification('Campos Obrigatórios', 'Por favor, preencha todos os campos.', 'error');
             return;
         }
         if (keysInUse.some(k => k.keyNumber === keyNumber)) {
@@ -143,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        const keyData = { keyNumber, sector, personName, timestamp: new Date() };
+        const keyData = { keyNumber, sector, personName, quadro, timestamp: new Date() };
         keysInUse.push(keyData);
         fullHistory.push({ ...keyData, status: 'saida' });
         showNotification('Sucesso!', `Saída da chave "${keyNumber}" registrada para ${personName}.`, 'success');
@@ -163,7 +178,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const filtered = fullHistory.filter(item => 
             item.keyNumber.toLowerCase().includes(searchTerm) ||
             item.personName.toLowerCase().includes(searchTerm) ||
-            (item.sector && item.sector.toLowerCase().includes(searchTerm))
+            (item.sector && item.sector.toLowerCase().includes(searchTerm)) ||
+            (item.quadro && item.quadro.toLowerCase().includes(searchTerm))
         );
         renderHistory(filtered);
     });
