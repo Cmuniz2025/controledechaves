@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const sectorEl = document.getElementById('sector');
     const personNameEl = document.getElementById('personName');
     const btnSaida = document.getElementById('btnSaida');
-    const btnEntrada = document.getElementById('btnEntrada');
     const keysInUseList = document.getElementById('keysInUseList');
     const historyTableBody = document.getElementById('historyTableBody');
     const searchInput = document.getElementById('searchInput');
@@ -12,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Modal de Notificação
     const modal = document.getElementById('notificationModal');
-    const modalContent = document.getElementById('notificationContent');
     const modalTitle = document.getElementById('notificationTitle');
     const modalMessage = document.getElementById('notificationMessage');
     const modalIcon = document.getElementById('notificationIcon');
@@ -60,11 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const date = key.timestamp.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
             const card = `
-                <div class="rounded-lg p-3 pr-4 flex flex-col sm:flex-row justify-between items-center gap-3 transition-colors duration-500 ${cardClasses}">
+                <div class="border rounded-lg p-3 flex flex-col sm:flex-row justify-between items-center gap-3 transition-colors duration-500 ${cardClasses}">
                     <div class="flex-grow">
                         <p class="font-bold text-gray-800">${key.keyNumber}</p>
                         <p class="text-sm text-gray-600">Por: <span class="font-semibold">${key.personName}</span> (${key.sector || 'N/A'})</p>
-                        <p class="text-xs text-gray-500">Em: ${date}</p>
+                        <p class="text-xs text-gray-500 mt-1">Em: ${date}</p>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-2 flex-shrink-0 w-full sm:w-auto">
                          <button data-key-id="${key.keyNumber}" data-return-type="normal" class="return-key-btn w-full bg-green-500 text-white font-bold py-2 px-3 rounded-md hover:bg-green-600 transition-colors text-sm flex items-center justify-center gap-2">
@@ -152,16 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         keyNumberEl.value = ''; sectorEl.value = ''; personNameEl.value = '';
         renderAll();
-    });
-
-    btnEntrada.addEventListener('click', () => {
-        const keyNumber = keyNumberEl.value.trim();
-        if (!keyNumber) {
-            showNotification('Campo Obrigatório', 'Por favor, informe o número da chave para registrar a entrada.', 'error');
-            return;
-        }
-        returnKey(keyNumber);
-        keyNumberEl.value = ''; sectorEl.value = ''; personNameEl.value = '';
     });
 
     keysInUseList.addEventListener('click', (e) => {
