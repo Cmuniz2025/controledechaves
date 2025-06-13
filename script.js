@@ -2,32 +2,15 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, collection, onSnapshot, doc, getDoc, setDoc, addDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-// ▼▼▼ COLE A SUA CONFIGURAÇÃO DO FIREBASE AQUI ▼▼▼
-const firebaseConfig = {
-  apiKey: "SUA_API_KEY",
-  authDomain: "SEU_AUTH_DOMAIN",
-  projectId: "SEU_PROJECT_ID",
-  storageBucket: "SEU_STORAGE_BUCKET",
-  messagingSenderId: "SEU_MESSAGING_SENDER_ID",
-  appId: "SEU_APP_ID"
-};
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
+// A sua configuração do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyAbERa8PF2cKWicvh5YFyHvYEnre9H2AIw",
   authDomain: "controle-de-chaves-fb740.firebaseapp.com",
   projectId: "controle-de-chaves-fb740",
-  storageBucket: "controle-de-chaves-fb740.firebasestorage.app",
+  storageBucket: "controle-de-chaves-fb740.appspot.com",
   messagingSenderId: "929271149164",
   appId: "1:929271149164:web:7c4a315f8e9a239f43de49"
 };
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
 
 // Inicializa o Firebase
 const app = initializeApp(firebaseConfig);
@@ -57,13 +40,15 @@ const modalMessage = document.getElementById('notificationMessage');
 const modalIcon = document.getElementById('notificationIcon');
 const closeModalButton = document.getElementById('closeModalButton');
 
+// Variáveis de estado
 let fullHistory = [];
+let cachedKeysInUse = [];
 
 function setupListeners() {
     // Escuta por mudanças nas chaves em uso
     onSnapshot(keysInUseCollection, (snapshot) => {
-        const keys = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        renderKeysInUse(keys);
+        cachedKeysInUse = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderKeysInUse(cachedKeysInUse);
     });
 
     // Escuta por mudanças no histórico
@@ -82,12 +67,12 @@ function renderKeysInUse(keys) {
         return;
     }
 
-    const sortedKeys = keys.sort((a,b) => b.timestamp?.toMillis() - a.timestamp?.toMillis());
+    const sortedKeys = keys.sort((a,b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
     const now = Date.now();
     const twentyFourHoursInMs = 24 * 60 * 60 * 1000;
 
     sortedKeys.forEach(key => {
-        const isOverdue = (now - key.timestamp?.toMillis()) > twentyFourHoursInMs;
+        const isOverdue = (now - (key.timestamp?.toMillis() || 0)) > twentyFourHoursInMs;
         const cardClasses = isOverdue
           ? 'bg-red-200 border-red-600 overdue-key'
           : 'bg-blue-50 border-blue-200';
@@ -124,7 +109,7 @@ function renderHistory(history) {
         return;
     }
     
-    const sortedHistory = [...history].sort((a, b) => b.timestamp?.toMillis() - a.timestamp?.toMillis());
+    const sortedHistory = [...history].sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
 
     sortedHistory.forEach(item => {
         const date = item.timestamp?.toDate().toLocaleString('pt-BR') || 'N/A';
@@ -160,7 +145,7 @@ async function returnKey(keyId, returnType = 'normal') {
         const keyData = docSnap.data();
         const historyStatus = returnType === 'final' ? 'entrega_final' : 'entrada';
         
-        await addDoc(historyCollection, { ...keyData, status: historyStatus });
+        await addDoc(historyCollection, { ...keyData, status: historyStatus, timestamp: serverTimestamp() });
         await deleteDoc(keyDocRef);
 
         showNotification('Sucesso', 'Chave devolvida com sucesso!', 'success');
@@ -199,7 +184,7 @@ async function handleSaida() {
         };
 
         await setDoc(keyDocRef, keyData);
-        await addDoc(historyCollection, { ...keyData, status: 'saida' });
+        await addDoc(historyCollection, { ...keyData, status: 'saida', timestamp: serverTimestamp() });
         
         showNotification('Sucesso!', `Saída da chave "${keyNumber}" registrada.`, 'success');
         keyNumberEl.value = '';
@@ -222,7 +207,7 @@ function generatePDF() {
     const tableColumn = ["Chave", "Pessoa", "Quadro", "Setor", "Status", "Data e Hora"];
     const tableRows = [];
 
-    const sortedHistory = [...fullHistory].sort((a, b) => b.timestamp?.toMillis() - a.timestamp?.toMillis());
+    const sortedHistory = [...fullHistory].sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
 
     sortedHistory.forEach(item => {
         const date = item.timestamp?.toDate().toLocaleString('pt-BR') || 'N/A';
@@ -287,4 +272,9 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-setInterval(renderKeysInUse, 60000);
+// Atualiza o estado visual das chaves atrasadas a cada minuto
+setInterval(() => {
+    if(cachedKeysInUse.length > 0) {
+        renderKeysInUse(cachedKeysInUse);
+    }
+}, 60000);
