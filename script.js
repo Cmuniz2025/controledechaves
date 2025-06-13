@@ -16,19 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalIcon = document.getElementById('notificationIcon');
     const closeModalButton = document.getElementById('closeModalButton');
 
-    // --- DADOS DE EXEMPLO PARA DEMONSTRAÇÃO ---
-    const createDemoKeys = () => {
-        const now = new Date();
-        const twentyFiveHoursAgo = new Date(now.getTime() - (25 * 60 * 60 * 1000));
-
-        return [
-            // Apenas a chave atrasada para a demonstração
-            { keyNumber: 'SEG-01', sector: 'Segurança', personName: 'Carlos Pereira', quadro: 'Quadro 01', timestamp: twentyFiveHoursAgo } 
-        ];
-    };
-    
-    // Armazenamento de dados local
-    let keysInUse = JSON.parse(localStorage.getItem('keysInUse')) || createDemoKeys();
+    // Armazenamento de dados local (inicia vazio)
+    let keysInUse = JSON.parse(localStorage.getItem('keysInUse')) || [];
     let fullHistory = JSON.parse(localStorage.getItem('fullHistory')) || [];
 
     // Converte timestamps de string para Date ao carregar
@@ -149,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const personName = personNameEl.value.trim();
         const quadro = document.querySelector('input[name="quadro"]:checked').value;
 
-        if (!keyNumber || !personName || !sector || !quadro) {
+        if (!keyNumber || !personName || !sector) {
             showNotification('Campos Obrigatórios', 'Por favor, preencha todos os campos.', 'error');
             return;
         }
@@ -163,7 +152,10 @@ document.addEventListener('DOMContentLoaded', () => {
         fullHistory.push({ ...keyData, status: 'saida' });
         showNotification('Sucesso!', `Saída da chave "${keyNumber}" registrada para ${personName}.`, 'success');
         
-        keyNumberEl.value = ''; sectorEl.value = ''; personNameEl.value = '';
+        keyNumberEl.value = ''; 
+        sectorEl.value = ''; 
+        personNameEl.value = '';
+        document.getElementById('quadro1').checked = true; // Reseta para Quadro 01
         renderAll();
     });
 
@@ -174,7 +166,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     searchInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase();
-        if (!searchTerm) { renderHistory(fullHistory); return; }
+        if (!searchTerm) { 
+            renderHistory(fullHistory); 
+            return; 
+        }
         const filtered = fullHistory.filter(item => 
             item.keyNumber.toLowerCase().includes(searchTerm) ||
             item.personName.toLowerCase().includes(searchTerm) ||
