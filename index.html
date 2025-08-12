@@ -220,12 +220,9 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Define um ID único para esta instância da aplicação
-        const appId = 'controle-de-chaves-v1';
-
-        // Coleções no Firestore usando caminhos públicos
-        const keysInUseCollection = collection(db, `artifacts/${appId}/public/data/keysInUse`);
-        const historyCollection = collection(db, `artifacts/${appId}/public/data/keyHistory`);
+        // Coleções no Firestore
+        const keysInUseCollection = collection(db, "keysInUse");
+        const historyCollection = collection(db, "keyHistory");
 
         // Elementos do DOM
         const keyNumberEl = document.getElementById('keyNumber');
@@ -334,7 +331,7 @@
         }
 
         async function returnKey(keyId, returnType = 'normal') {
-            const keyDocRef = doc(db, `artifacts/${appId}/public/data/keysInUse`, keyId);
+            const keyDocRef = doc(db, "keysInUse", keyId);
             try {
                 const docSnap = await getDoc(keyDocRef);
                 if (!docSnap.exists()) { showNotification('Erro', 'Esta chave já foi devolvida.', 'error'); return; }
@@ -355,7 +352,7 @@
             const quadro = document.querySelector('input[name="quadro"]:checked').value;
             if (!keyNumber || !personName || !sector) { showNotification('Campos Obrigatórios', 'Por favor, preencha todos os campos.', 'error'); return; }
             try {
-                const keyDocRef = doc(db, `artifacts/${appId}/public/data/keysInUse`, keyNumber);
+                const keyDocRef = doc(db, "keysInUse", keyNumber);
                 const docSnap = await getDoc(keyDocRef);
                 if (docSnap.exists()) { showNotification('Chave em Uso', `A chave "${keyNumber}" já está retirada.`, 'error'); return; }
                 const keyData = { keyNumber, sector, personName, quadro, timestamp: serverTimestamp() };
