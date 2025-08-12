@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Controle de Chaves</title>
+    <title>Sistema de Controle de Chaves - Iguatemi Campinas</title>
     
     <!-- Estilos Externos -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,10 +13,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.autotable.min.js"></script>
     
-    <!-- O nosso estilo personalizado -->
+    <!-- Fontes do Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@900&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilo personalizado inspirado na imagem -->
     <style>
+        :root {
+            --iguatemi-logo-black: #1a1a1a;
+            --iguatemi-title-brown: #bca896;
+            --iguatemi-text-gray: #6b6b6b;
+            --iguatemi-background: #fdfdfd;
+            --iguatemi-border: #e0e0e0;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Lato', sans-serif;
+            background-color: var(--iguatemi-background);
+            color: var(--iguatemi-text-gray);
+        }
+        
+        h1, h2, h3 {
+             font-family: 'Merriweather', serif;
+             color: var(--iguatemi-logo-black);
         }
 
         .table-container {
@@ -24,44 +44,71 @@
             overflow-y: auto;
         }
 
-        /* Animação de pulsação para chaves atrasadas */
+        .custom-card {
+            background-color: #ffffff;
+            border: 1px solid var(--iguatemi-border);
+            border-radius: 0.25rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .custom-input {
+            border: 1px solid var(--iguatemi-border);
+            transition: all 0.2s ease-in-out;
+            border-radius: 0.25rem;
+        }
+        .custom-input:focus {
+            outline: none;
+            border-color: var(--iguatemi-title-brown);
+            box-shadow: 0 0 0 3px rgba(188, 168, 150, 0.2);
+        }
+        
+        .custom-button {
+            background-color: var(--iguatemi-logo-black);
+            color: white;
+            border-radius: 0.25rem;
+            font-weight: 700;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.2s ease-in-out;
+        }
+        .custom-button:hover {
+            background-color: #333;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
         @keyframes pulse-red {
-          0%, 100% {
-            background-color: #FECACA; /* red-200 */
-            border-color: #DC2626; /* red-600 */
-          }
-          50% {
-            background-color: #FEE2E2; /* red-100 */
-            border-color: #F87171; /* red-400 */
-          }
+          0%, 100% { background-color: #FEE2E2; border-color: #F87171; }
+          50% { background-color: #FEF2F2; border-color: #FCA5A5; }
         }
 
         .overdue-key {
-          animation: pulse-red 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+          animation: pulse-red 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen">
 
     <main id="app-container" class="container mx-auto p-4 md:p-8 max-w-7xl flex-grow">
 
-        <header class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">🔑 Controle de Chaves</h1>
-            <p class="text-gray-500 mt-2">Gerencie a entrada e saída de chaves de forma eficiente.</p>
+        <header class="relative text-center mb-12 py-6">
+            <div class="absolute top-1/2 left-0 -translate-y-1/2">
+                <img src="https://i.imgur.com/8S1gP7p.png" alt="Logo Iguatemi Campinas" class="h-12">
+            </div>
+            <h1 class="text-4xl md:text-5xl font-black" style="color: var(--iguatemi-title-brown);">Controle de Chaves</h1>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Coluna de Ações -->
-            <div class="bg-white p-6 rounded-2xl shadow-lg">
-                <h2 class="text-xl font-bold mb-4 border-b pb-2">Registrar Movimentação</h2>
-                <div class="space-y-4">
+            <div class="custom-card p-6">
+                <h2 class="text-xl font-black mb-6 border-b pb-3">Registrar Movimentação</h2>
+                <div class="space-y-5">
                     <div>
-                        <label for="keyNumber" class="block text-sm font-medium text-gray-600">Nº da Chave / Identificação</label>
-                        <input type="text" id="keyNumber" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500" placeholder="Ex: 101, TI-SALA-02">
+                        <label for="keyNumber" class="block text-sm font-bold">Nº da Chave / Identificação</label>
+                        <input type="text" id="keyNumber" class="custom-input mt-1 block w-full px-3 py-2" placeholder="Ex: 101, TI-SALA-02">
                     </div>
                     <div>
-                        <label for="sector" class="block text-sm font-medium text-gray-600">Setor Responsável</label>
-                        <select id="sector" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500">
+                        <label for="sector" class="block text-sm font-bold">Setor Responsável</label>
+                        <select id="sector" class="custom-input mt-1 block w-full px-3 py-2">
                             <option value="" disabled selected>Selecione um setor...</option>
                             <option value="Segurança">Segurança</option>
                             <option value="Manutenção">Manutenção</option>
@@ -72,24 +119,24 @@
                         </select>
                     </div>
                     <div>
-                        <label for="personName" class="block text-sm font-medium text-gray-600">Nome do Retirante</label>
-                        <input type="text" id="personName" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500" placeholder="Ex: João da Silva">
+                        <label for="personName" class="block text-sm font-bold">Nome do Retirante</label>
+                        <input type="text" id="personName" class="custom-input mt-1 block w-full px-3 py-2" placeholder="Ex: João da Silva">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-600">Quadro de Chaves</label>
+                        <label class="block text-sm font-bold">Quadro de Chaves</label>
                         <div class="mt-2 flex items-center space-x-6">
                             <label for="quadro1" class="flex items-center cursor-pointer">
-                                <input type="radio" id="quadro1" name="quadro" value="Quadro 01" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" checked>
-                                <span class="ml-2 text-sm text-gray-700">Quadro 01</span>
+                                <input type="radio" id="quadro1" name="quadro" value="Quadro 01" class="h-4 w-4" style="color: var(--iguatemi-logo-black);" checked>
+                                <span class="ml-2 text-sm">Quadro 01</span>
                             </label>
                             <label for="quadro2" class="flex items-center cursor-pointer">
-                                <input type="radio" id="quadro2" name="quadro" value="Quadro 02" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
-                                <span class="ml-2 text-sm text-gray-700">Quadro 02</span>
+                                <input type="radio" id="quadro2" name="quadro" value="Quadro 02" class="h-4 w-4" style="color: var(--iguatemi-logo-black);">
+                                <span class="ml-2 text-sm">Quadro 02</span>
                             </label>
                         </div>
                     </div>
-                    <div class="pt-2">
-                        <button id="btnSaida" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+                    <div class="pt-4">
+                        <button id="btnSaida" class="custom-button w-full flex items-center justify-center gap-2">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i> Registrar Saída
                         </button>
                     </div>
@@ -101,22 +148,22 @@
 
             <!-- Coluna de Listas -->
             <div class="lg:col-span-2 space-y-8">
-                <div class="bg-white p-6 rounded-2xl shadow-lg">
-                    <h2 class="text-xl font-bold mb-4 border-b pb-2 flex items-center gap-2"><i class="fa-solid fa-key text-yellow-500"></i> Chaves em Uso (<span id="inUseCount">0</span>)</h2>
+                <div class="custom-card p-6">
+                    <h2 class="text-xl font-black mb-6 border-b pb-3 flex items-center gap-3"><i class="fa-solid fa-key text-yellow-500"></i> Chaves em Uso (<span id="inUseCount">0</span>)</h2>
                     <div id="keysInUseList" class="space-y-3 max-h-[400px] overflow-y-auto pr-2"></div>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl shadow-lg">
-                    <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-4 gap-4">
-                        <h2 class="text-xl font-bold flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-indigo-500"></i> Histórico de Movimentações</h2>
+                <div class="custom-card p-6">
+                     <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 border-b pb-3 gap-4">
+                        <h2 class="text-xl font-black flex items-center gap-3"><i class="fa-solid fa-clock-rotate-left" style="color: var(--iguatemi-title-brown);"></i> Histórico</h2>
                         <div class="relative">
-                            <input type="text" id="searchInput" class="w-full sm:w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Buscar no histórico...">
+                            <input type="text" id="searchInput" class="custom-input sm:w-64 pl-10 py-2" placeholder="Buscar no histórico...">
                              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                         </div>
                     </div>
-                    <div class="table-container border rounded-lg">
-                        <table class="w-full text-sm text-left text-gray-600">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0">
+                    <div class="table-container">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs uppercase text-gray-500">
                                 <tr>
                                     <th scope="col" class="px-4 py-3">Chave</th>
                                     <th scope="col" class="px-4 py-3">Pessoa</th>
@@ -130,8 +177,8 @@
                         </table>
                     </div>
                     <div class="mt-6 text-center">
-                        <button id="btnGerarRelatorio" class="bg-teal-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-teal-600 transition-colors flex items-center justify-center gap-2 mx-auto">
-                            <i class="fa-solid fa-file-pdf"></i> Gerar Relatório em PDF
+                        <button id="btnGerarRelatorio" class="custom-button bg-gray-600 hover:bg-gray-700 flex items-center justify-center gap-2 mx-auto">
+                            <i class="fa-solid fa-file-pdf"></i> Gerar Relatório
                         </button>
                     </div>
                 </div>
@@ -139,17 +186,17 @@
         </div>
         
         <div id="notificationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 p-4">
-            <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm text-center transition-all" id="notificationContent">
+            <div class="bg-white rounded-lg shadow-2xl p-6 w-full max-w-sm text-center transition-all" id="notificationContent">
                 <div id="notificationIcon" class="mx-auto mb-4 w-12 h-12 rounded-full flex items-center justify-center"></div>
-                <h3 id="notificationTitle" class="text-lg font-medium text-gray-900"></h3>
-                <p id="notificationMessage" class="mt-2 text-sm text-gray-500"></p>
-                <button id="closeModalButton" class="mt-6 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">Fechar</button>
+                <h3 id="notificationTitle" class="text-lg font-bold text-gray-900"></h3>
+                <p id="notificationMessage" class="mt-2 text-sm text-gray-600"></p>
+                <button id="closeModalButton" class="mt-6 w-full custom-button">Fechar</button>
             </div>
         </div>
     </main>
 
-    <footer class="text-center py-4 mt-8">
-        <p class="text-sm text-gray-500">Site criado por Claudio Muniz®</p>
+    <footer class="text-center py-6">
+        <p class="text-sm text-gray-400">Site criado por Claudio Muniz®</p>
     </footer>
 
     <!-- Firebase SDKs -->
@@ -173,9 +220,12 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Coleções no Firestore
-        const keysInUseCollection = collection(db, "keysInUse");
-        const historyCollection = collection(db, "keyHistory");
+        // Define um ID único para esta instância da aplicação
+        const appId = 'controle-de-chaves-v1';
+
+        // Coleções no Firestore usando caminhos públicos
+        const keysInUseCollection = collection(db, `artifacts/${appId}/public/data/keysInUse`);
+        const historyCollection = collection(db, `artifacts/${appId}/public/data/keyHistory`);
 
         // Elementos do DOM
         const keyNumberEl = document.getElementById('keyNumber');
@@ -204,10 +254,22 @@
             onSnapshot(keysInUseCollection, (snapshot) => {
                 cachedKeysInUse = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderKeysInUse(cachedKeysInUse);
+            }, (error) => {
+                console.error("Erro no listener de 'keysInUse': ", error);
+                if (error.code === 'permission-denied') {
+                    showNotification(
+                        'Erro de Permissão (Firestore)', 
+                        'A aplicação não conseguiu ler os dados. Verifique se as Regras de Segurança do seu Firestore permitem leitura. O modo de teste do Firebase pode ter expirado.', 
+                        'error'
+                    );
+                }
             });
+
             onSnapshot(historyCollection, (snapshot) => {
                 fullHistory = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderHistory(fullHistory);
+            }, (error) => {
+                console.error("Erro no listener de 'keyHistory': ", error);
             });
         }
 
@@ -215,7 +277,7 @@
             keysInUseList.innerHTML = '';
             inUseCountEl.textContent = keys.length;
             if (keys.length === 0) {
-                keysInUseList.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhuma chave retirada no momento.</p>';
+                keysInUseList.innerHTML = '<p class="text-center py-4">Nenhuma chave retirada no momento.</p>';
                 return;
             }
             const sortedKeys = keys.sort((a,b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
@@ -223,13 +285,13 @@
             const twentyFourHoursInMs = 24 * 60 * 60 * 1000;
             sortedKeys.forEach(key => {
                 const isOverdue = (now - (key.timestamp?.toMillis() || 0)) > twentyFourHoursInMs;
-                const cardClasses = isOverdue ? 'bg-red-200 border-red-600 overdue-key' : 'bg-blue-50 border-blue-200';
+                const cardClasses = isOverdue ? 'overdue-key border' : 'bg-gray-50 border';
                 const date = key.timestamp?.toDate().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) || 'N/A';
                 const card = `
-                    <div class="border rounded-lg p-3 flex flex-col sm:flex-row justify-between items-center gap-3 transition-colors duration-500 ${cardClasses}">
+                    <div class="rounded-md p-3 flex flex-col sm:flex-row justify-between items-center gap-3 transition-colors duration-500 ${cardClasses}">
                         <div class="flex-grow">
                             <p class="font-bold text-gray-800">${key.keyNumber}</p>
-                            <p class="text-sm text-gray-600">Por: <span class="font-semibold">${key.personName}</span> (${key.sector || 'N/A'}) - <span class="font-medium">${key.quadro || ''}</span></p>
+                            <p class="text-sm">Por: <span class="font-semibold">${key.personName}</span> (${key.sector || 'N/A'}) - <span class="font-semibold">${key.quadro || ''}</span></p>
                             <p class="text-xs text-gray-500 mt-1">Em: ${date}</p>
                         </div>
                         <div class="flex flex-col sm:flex-row gap-2 flex-shrink-0 w-full sm:w-auto">
@@ -251,20 +313,20 @@
             const sortedHistory = [...history].sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
             sortedHistory.forEach(item => {
                 const date = item.timestamp?.toDate().toLocaleString('pt-BR') || 'N/A';
-                let statusClass, statusText;
+                let statusText;
                 switch (item.status) {
-                    case 'saida': statusClass = 'bg-red-100 text-red-800'; statusText = 'Saída'; break;
-                    case 'entrada': statusClass = 'bg-green-100 text-green-800'; statusText = 'Entrada'; break;
-                    case 'entrega_final': statusClass = 'bg-orange-100 text-orange-800'; statusText = 'Entrega definitiva'; break;
-                    default: statusClass = 'bg-gray-200 text-gray-800'; statusText = item.status || 'N/A'; break;
+                    case 'saida': statusText = '<span class="px-2 py-1 font-semibold leading-tight text-xs rounded-full bg-red-100 text-red-800">Saída</span>'; break;
+                    case 'entrada': statusText = '<span class="px-2 py-1 font-semibold leading-tight text-xs rounded-full bg-green-100 text-green-800">Entrada</span>'; break;
+                    case 'entrega_final': statusText = '<span class="px-2 py-1 font-semibold leading-tight text-xs rounded-full bg-orange-100 text-orange-800">Entrega definitiva</span>'; break;
+                    default: statusText = `<span class="px-2 py-1 font-semibold leading-tight text-xs rounded-full bg-gray-200 text-gray-800">${item.status || 'N/A'}</span>`; break;
                 }
                 const row = `
-                    <tr class="border-b hover:bg-gray-50">
-                        <td class="px-4 py-3 font-medium">${item.keyNumber}</td>
+                    <tr class="border-b border-gray-200 hover:bg-gray-50">
+                        <td class="px-4 py-3 font-semibold">${item.keyNumber}</td>
                         <td class="px-4 py-3">${item.personName}</td>
                         <td class="px-4 py-3">${item.quadro || 'N/A'}</td>
                         <td class="px-4 py-3">${item.sector || 'N/A'}</td>
-                        <td class="px-4 py-3"><span class="px-2 py-1 font-semibold leading-tight text-xs rounded-full ${statusClass}">${statusText}</span></td>
+                        <td class="px-4 py-3">${statusText}</td>
                         <td class="px-4 py-3">${date}</td>
                     </tr>`;
                 historyTableBody.innerHTML += row;
@@ -272,7 +334,7 @@
         }
 
         async function returnKey(keyId, returnType = 'normal') {
-            const keyDocRef = doc(db, "keysInUse", keyId);
+            const keyDocRef = doc(db, `artifacts/${appId}/public/data/keysInUse`, keyId);
             try {
                 const docSnap = await getDoc(keyDocRef);
                 if (!docSnap.exists()) { showNotification('Erro', 'Esta chave já foi devolvida.', 'error'); return; }
@@ -293,7 +355,7 @@
             const quadro = document.querySelector('input[name="quadro"]:checked').value;
             if (!keyNumber || !personName || !sector) { showNotification('Campos Obrigatórios', 'Por favor, preencha todos os campos.', 'error'); return; }
             try {
-                const keyDocRef = doc(db, "keysInUse", keyNumber);
+                const keyDocRef = doc(db, `artifacts/${appId}/public/data/keysInUse`, keyNumber);
                 const docSnap = await getDoc(keyDocRef);
                 if (docSnap.exists()) { showNotification('Chave em Uso', `A chave "${keyNumber}" já está retirada.`, 'error'); return; }
                 const keyData = { keyNumber, sector, personName, quadro, timestamp: serverTimestamp() };
