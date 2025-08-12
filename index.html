@@ -92,7 +92,7 @@
 
         <header class="relative text-center mb-12 py-6">
             <div class="absolute top-1/2 left-0 -translate-y-1/2">
-                <img src="https://i.imgur.com/8S1gP7p.png" alt="Logo Iguatemi Campinas" class="h-12">
+                <img src="https://i.ibb.co/R49c8Sfn/Iguatemi-Campinas-1430823322.png" alt="Logo Iguatemi Campinas" class="h-12">
             </div>
             <h1 class="text-4xl md:text-5xl font-black" style="color: var(--iguatemi-title-brown);">Controle de Chaves</h1>
         </header>
@@ -224,8 +224,8 @@
         const appId = 'controle-de-chaves-v1';
 
         // Coleções no Firestore usando caminhos públicos
-        const keysInUseCollection = collection(db, `artifacts/${appId}/public/data/keysInUse`);
-        const historyCollection = collection(db, `artifacts/${appId}/public/data/keyHistory`);
+        const keysInUseCollection = collection(db, "keysInUse");
+        const historyCollection = collection(db, "keyHistory");
 
         // Elementos do DOM
         const keyNumberEl = document.getElementById('keyNumber');
